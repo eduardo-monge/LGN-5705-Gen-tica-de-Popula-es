@@ -26,8 +26,11 @@ Antes de rodar qualquer comando do STACKS para demultiplexar, o programa precisa
 O STACKS é extremamente rigoroso com o formato deste arquivo. Ele deve ser um arquivo de texto simples (`.txt`), onde as colunas são separadas **exclusivamente pela tecla TAB** (tabulação). Não deve ter cabeçalhos (títulos de colunas) nem espaços em branco soltos.
 
 A estrutura mais básica tem duas colunas: `[Sequência_do_Barcode]<tab>[Nome_da_Amostra]`
-
-<img width="223" height="222" alt="image" src="https://github.com/user-attachments/assets/427204af-e5fb-4f8d-afae-a6930986df85" />
+<p align="center">
+  <img width="223" height="222" alt="image" src="https://github.com/user-attachments/assets/427204af-e5fb-4f8d-afae-a6930986df85" />
+  <br>
+  <sub><b>Figura 2.</b> Formato do arquivo de barcodes para STACKS.</sub>
+</p>
 
 Os nomes das amostras podem ser os relevantes para o seu projeto. A dica é usar sempre nomes simples, alfanuméricos. 
 
@@ -150,85 +153,138 @@ process_radtags -1 ../data/raw/sample_R1.fastq -2 ../../data/raw/sample_R2.fastq
 ## 2. Controle de Qualidade Inicial (QC)
 Agora que temos nossos arquivos FASTQ separados por amostra, precisamos fazer a avaliação dos arquivos para garantir dados de alta qualidade para análises posteriores. 
 
-Lembre-se de que os arquivos são arquivos FASTQ, que são arquivos FASTA modificados para incluir também informações sobre a qualidade do sequenciamento para cada base (PHRED score). A qualidade Q reflete a probabilidade p de que a base esteja incorreta. Os valores de Q podem variar de 0 a 93 (mas a pontuação máxima que você normalmente verá é 40). Para economizar espaço em um arquivo FASTQ, cada pontuação de qualidade é transformada em um único caractere ASCII.
-<img width="877" height="267" alt="5d0a8f1b-4a1d-4777-b8c9-a4325d242560" src="https://github.com/user-attachments/assets/8d1eb519-f2a2-481c-90bc-fbfa91fa0b23" />
+Lembre-se de que os arquivos são arquivos FASTQ, que são arquivos FASTA modificados para incluir também informações sobre a qualidade do sequenciamento para cada base (PHRED score). 
+<p align="center">
+ <img width="553" height="311" alt="fastqc" src="https://github.com/user-attachments/assets/880b65b5-b995-475e-8a04-229565039229" />
+  <br>
+  <sub><b>Figura 3.</b> Formato do arquivo FASTQC.</sub>
+</p>
+
+A qualidade Q reflete a probabilidade p de que a base esteja incorreta. Os valores de Q podem variar de 0 a 93 (mas a pontuação máxima que você normalmente verá é 40). Para economizar espaço em um arquivo FASTQ, cada pontuação de qualidade é transformada em um único caractere ASCII.
+<p align="center">
+ <img width="877" height="267" alt="5d0a8f1b-4a1d-4777-b8c9-a4325d242560" src="https://github.com/user-attachments/assets/8d1eb519-f2a2-481c-90bc-fbfa91fa0b23" />
+  <br>
+  <sub><b>Figura 4.</b> Interpretação dos caracteres ASCII em valores de qualidade das sequencias (Q).</sub>
+</p>
 
 ### 0. Visualizando os arquivos FASTQ
-Antes de gerar os arquivos de qualidade, vamos usar comandos básicos do UNIX para explorar os dados e nos familiarizar com o formato FASTQ.
 
-A. Primeiro use o os comandos `cat`/`head` para inspecionar um arquivo fastq.
-❓Quais são os caracteres iniciais do cabeçalho para todas as leituras?
+Antes de gerar os relatórios de qualidade, vamos usar comandos básicos do UNIX para explorar os dados e nos familiarizar com o formato FASTQ. Os arquivos demultiplexados estão na pasta `~/demultiplex`, com a extensão `.fq.gz` (o `.gz` indica que estão comprimidos).
 
-```bash
-zcat ../demultiplex/Acrocomia_pop1_01.fastq | head
-
-# -----------------------------------------
-#O símbolo de | é o "Pipe".
-#Ele instrui o terminal a pegar o resultado (a saída) do comando que está à sua esquerda e "injetá-lo" diretamente como entrada para o comando que está à sua direita, sem precisar salvar um arquivo temporário no meio do caminho. Isso permite realizar mais de uma operação ao mesmo tempo. 
-# -----------------------------------------
-
-```
-B. Assim como o `head` lê o topo, o `tail` lê o final do arquivo. As últimas sequências sequenciadas em uma corrida costumam ter qualidade pior.
+**A.** Como os arquivos estão comprimidos, usamos o `zcat` para descomprimi-los "no voo", sem criar um arquivo novo, e o `head` para ver só o começo:
 
 ```bash
-tail  ../demultiplex/Acrocomia_pop1_01.fastq
-tail -n 15 ../demultiplex/Acrocomia_pop1_01.fastq
-
-# -----------------------------------------
-#Tanto head quanto tail retornam 10 linhas. Mas é possível usar o -n para indicar o número de linhas que desejo avaliar.
-# -----------------------------------------
+zcat ~/demultiplex/AM_04.fq.gz | head
 ```
 
-C. Agora vamos usar o comando `grep` para procurar palavras ou expressões específicas dentro do nosso arquivo.
-❓Quantas leituras temos para cada indivíduo?
+> [!TIP]
+> O símbolo `|` é o *pipe*. Ele pega a saída do comando à esquerda e a entrega como entrada para o comando à direita, sem salvar nenhum arquivo intermediário. Assim, encadeamos várias operações em uma única linha.
+
+❓ Cada read ocupa quantas linhas? O que tem em cada uma delas? Qual é o caractere inicial do cabeçalho de todos os reads?
+
+**B.** Assim como o `head` lê o começo, o `tail` lê o final do arquivo. Isso é útil para conferir se um arquivo está completo: um arquivo cortado no meio de uma transferência termina com um read incompleto.
 
 ```bash
-grep -c "^@SR" ../demultiplex/Acrocomia_pop1_01.fastq
-
-# -----------------------------------------
-#O `-c` significa `count` (contar) e o `^` significa 'no início da linha'
-# -----------------------------------------
+zcat ~/demultiplex/AM_04.fq.gz | tail
+zcat ~/demultiplex/AM_04.fq.gz | tail -n 16
 ```
+
+> [!TIP]
+> Por padrão, `head` e `tail` mostram 10 linhas. A opção `-n` define quantas linhas queremos ver.
+
+**C.** Quantos reads tem cada amostra? Como cada read ocupa exatamente 4 linhas, basta contar as linhas do arquivo e dividir por 4:
+
+```bash
+echo $(( $(zcat ~/demultiplex/AM_04.fq.gz | wc -l) / 4 ))
+```
+
+E para todas as amostras de uma vez, usando um *loop*:
+
+```bash
+for arquivo in ~/demultiplex/*.fq.gz; do
+    echo "$(basename $arquivo): $(( $(zcat $arquivo | wc -l) / 4 )) reads"
+done
+```
+
+❓ Quantos reads tem cada indivíduo? Os números batem com o que aparece no `process_radtags.log`? Há amostras com muito menos reads que as outras?
+
+❓ Por que não podemos simplesmente contar quantas linhas começam com `@`? (Dica: olhe com atenção a quarta linha de cada read.)
 
 ### 1. Avaliando a qualidade dos dados com o FastQC
-O [FastQC](https://github.com/s-andrews/FastQC?tab=readme-ov-file) é uma ferramenta amplamente utilizada para avaliar a qualidade dos dados de sequenciamento. Ele gera um relatório HTML detalhado que inclui métricas como:
 
-1. **Qualidade por base:** pontuações médias de qualidade ao longo do comprimento das leituras.
-2. **Conteúdo GC:** A porcentagem de bases G e C.
-3. **Níveis de duplicatas:** Identifica possíveis duplicatas de PCR.
-4. **Conteúdo do adaptador:** Verifica se há adaptadores de sequenciamento residuais.
+O [FastQC](https://github.com/s-andrews/FastQC) é uma ferramenta amplamente usada para avaliar a qualidade de dados de sequenciamento. Ele gera um relatório HTML com métricas como:
 
-```bash
-# Ir para a pasta de resultados de QC
-cd ~/workshop_bioinfo
-mkdir -p results/qc/raw_qc
-cd results/qc/raw_qc
-
-# Rodar o FastQC para todos os arquivos FASTQ demultiplexados (*.fastq)
-fastqc -t 4 ../../../data/demultiplex/*.fq.gz -o .
-
-# -----------------------------------------
-#Os parâmetros importantes a serem considerados:
-# *.fastq o símbolo de asterísco (*) diz ao Linux para selecionar *todos* os arquivos que terminam com `.fastq` dentro daquela pasta. 
-# -o é a pasta de saída dos relatórios HTML. O ponto (.) um atalho que significa "esta pasta atual". Portanto, os resultados serão salvos exatamente onde você está agora no terminal.
-# -t 4 são os threads. Indica o número de núcleos do processador serem utilizados simultaneamente. 
-# -----------------------------------------
-
-```
-Abra o arquivo HTML no navegador para examinar as métricas de qualidade.
-
-❓Avalie a qualidade dos arquivos fastq. Qual é o comprimento médio dos reads 1? Qual é a qualidade dos dados? Há alguma queda na qualidade ao longo da sequência? Qual arquivo tem melhor e pior qualidade? Há alguma sequência de adaptador detectada?
-
-
-### 2. Gerando um único relatório de todas as leituras com o MultiQC
-O FastQC é uma ferramenta muito útil e poderosa. Uma limitação é que ele gera um relatório para cada leitura. Quando temos muitas leituras e muitos indivíduos (como geralmente acontece), pode ser difícil abrir e estudar cada relatório individualmente. Para criar um único relatório consensual que seja mais fácil de avaliar, podemos usar o [MultiQC](https://github.com/MultiQC/MultiQC).
-
-O uso é muito simples, basta estar dentro da pasta onde estão todos os arquivos HTML.
+1. **Qualidade por base:** a qualidade média em cada posição ao longo dos reads.
+2. **Conteúdo GC:** a porcentagem de bases G e C.
+3. **Níveis de duplicação:** identifica possíveis duplicatas de PCR.
+4. **Conteúdo de adaptador:** verifica se sobraram sequências de adaptador.
 
 ```bash
-# O ponto (.) indica para o MultiQC procurar na pasta atual
-multiqc .
-```
-Agora abra o relatório final no navegador e vamos avaliar todas as amostras juntas. 
+# Criar a pasta para os relatórios de qualidade dos dados brutos
+mkdir -p ~/qc/brutos
 
-❓Que características da biblioteca GBS poderiam ter causado esses resultados? 
+# Rodar o FastQC em todos os arquivos demultiplexados
+fastqc -t 1 ~/demultiplex/*.fq.gz -o ~/qc/brutos
+```
+
+> [!TIP]
+> - O `*` seleciona **todos** os arquivos que terminam em `.fq.gz` dentro da pasta.
+> - `-o` indica a pasta de saída dos relatórios.
+> - `-t` define quantos núcleos (*threads*) usar. Neste servidor, cada um de nós tem 1 núcleo disponível.
+
+Para abrir os relatórios HTML, é preciso copiá-los para o seu computador (veja a seção [Copiando arquivos do servidor para o seu computador](#copiando-arquivos-do-servidor-para-o-seu-computador)).
+
+❓ Avalie a qualidade dos arquivos. Qual é o comprimento dos reads? A qualidade cai ao longo da sequência? Qual amostra tem a melhor e qual tem a pior qualidade? Foi detectada alguma sequência de adaptador?
+
+### 2. Um relatório único de todas as amostras com o MultiQC
+
+O FastQC gera um relatório separado para cada arquivo. Com muitas amostras (o que é o normal), abrir e comparar um por um fica inviável. O [MultiQC](https://github.com/MultiQC/MultiQC) junta todos em um único relatório:
+
+```bash
+multiqc ~/qc/brutos -o ~/qc/brutos
+```
+
+Agora copie o arquivo `multiqc_report.html` para o seu computador, abra no navegador e vamos avaliar todas as amostras juntas.
+
+❓ Que características de uma biblioteca GBS poderiam explicar esses resultados?
+
+---
+
+## Copiando arquivos do servidor para o seu computador
+
+O servidor não tem tela nem navegador, então, para ver os relatórios HTML, precisamos copiá-los para o nosso computador. Para isso usamos o `scp` (*secure copy*), que funciona como o `cp`, mas entre computadores diferentes, usando a mesma conexão do SSH.
+
+> [!IMPORTANT]
+> O `scp` é rodado **no terminal do seu computador**, e não no servidor. Abra um terminal novo:
+> - **Windows:** PowerShell (o `scp` já vem instalado no Windows 10 e 11)
+> - **Mac e Linux:** Terminal
+
+Primeiro, vá para a pasta onde você quer salvar os arquivos, por exemplo Downloads:
+
+```bash
+cd Downloads
+```
+
+O formato do comando é `scp -P PORTA usuario@servidor:caminho/no/servidor destino/no/computador`. Para copiar o relatório do MultiQC:
+
+```bash
+scp -P PORTA nome.sobrenome@ENDERECO_DO_SERVIDOR:~/qc/brutos/multiqc_report.html .
+```
+
+Para copiar vários arquivos de uma vez, por exemplo todos os relatórios do FastQC, use o `*` **entre aspas**, para que ele seja interpretado no servidor e não no seu computador:
+
+```bash
+scp -P PORTA "nome.sobrenome@ENDERECO_DO_SERVIDOR:~/qc/brutos/*.html" .
+```
+
+E para copiar uma pasta inteira, com tudo o que tem dentro, use `-r`:
+
+```bash
+scp -P PORTA -r nome.sobrenome@ENDERECO_DO_SERVIDOR:~/qc/brutos .
+```
+
+> [!TIP]
+> - O `.` no final significa "a pasta atual", que no exemplo é Downloads.
+> - No `scp` a porta se indica com **`-P` maiúsculo**, enquanto no `ssh` é com `-p` minúsculo. É um erro muito comum!
+> - O `scp` vai pedir a sua senha, a mesma do SSH.
+
