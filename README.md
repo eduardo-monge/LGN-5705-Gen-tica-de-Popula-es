@@ -12,9 +12,9 @@ Bem-vindo ao repositório central do nosso workshop! Este espaço contém o rote
 📖 Roteiros das Práticas
 Clique nos links abaixo para acessar o passo a passo de cada dia:
 
-* [0: Introdução Linux](00_linux/)
-* [1. Demultiplex, QC e Trimming e Alinhamento](01_demultiplex/)
-* [2. Trimming](02_trimming/)
-* [3. Mapamiento](03_mapping/)
-* [4. Variant Calling](04_variantcalling/)
-* [5. Filtragem VCF final](04_vcf/)
+* [0: Introdução Linux](00_linux.md)
+* [1. Demultiplex, QC e Trimming e Alinhamento](01_demultiplex.md)
+* [2. Trimming](02_trimming.md)
+* [3. Mapamiento](03_mapping.md)
+* [4. Variant Calling](04_variantcalling.md)
+* [5. Filtragem VCF final](04_vcf.md)
