@@ -1,0 +1,19 @@
+name: snp_calling
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - fastqc
+  - multiqc
+  - trim-galore
+  - trimmomatic
+  - bwa
+  - samtools
+  - picard
+  - gatk4
+  - stacks=2.60
+  - vcftools
+  - bcftools
+  - fastp
+  - freebayes
