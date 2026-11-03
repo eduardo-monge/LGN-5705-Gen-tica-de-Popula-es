@@ -93,43 +93,52 @@ O `wc -l` deve mostrar **10** linhas, uma por amostra.
 
 
 ### 1. Executar `process_radtags`
-Agora estamos prontos para executar o programa. A documentação completa com todos os parâmetros e casos está disponível na página do [STACKS](https://catchenlab.life.illinois.edu/stacks/comp/process_radtags.php).
+Já estamos na pasta `demultiplex`, onde criamos o arquivo `barcodes.txt`. Se você saiu dela, volte com:
 
 ```bash
-# 1. Navegar para a pasta onde criaremos os resultados demultiplexados
-cd ~/workshop_bioinfo
-mkdir -p data/demultiplex
-cd data/demultiplex
-
-# 2. Executar o STACKS (Substitua as informações conforme sua enzima e arquivos)
-# -1 e -2: Arquivos brutos (Forward e Reverse)
-# -b: Arquivo de texto com os barcodes
-# -o: Pasta de saída
-# -e: Enzima de restrição usada
-# -r, -c, -q: Limpar reads órfãos, corrigir barcodes e checar qualidade básica
-
-process_radtags -f ../raw/mz_gbs_acrocomia.fastq.gz \
-                -b ../barcodes.txt \
-                -o . \
-                --adapter-1 AGATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG \
-                -e pstI \
-                --adapter-mm 2 \
-                -r \
-                -c \
-                -q
-
-# -----------------------------------------
-O que este código faz:
-# -f (File): Indica ao algoritmo que estamos inserindo um arquivo Single-End e aponta o caminho absoluto ou relativo para as leituras brutas comprimidas.
-# -b (Barcodes): Caminho para o arquivo de texto tabular contendo os identificadores (índices) para a separação dos indivíduos.
-# -o (Output): Diretório de saída onde os arquivos limpos e separados serão salvos (o . instrui o programa a salvar no diretório atual).
-# --adapter-1: Fornece a sequência exata do adaptador Illumina. O programa fará uma varredura rigorosa para encontrar e cortar (trim) essa sequência indesejada.
-# -e mseI (Enzyme): Informa a enzima de restrição utilizada na digestão do genoma durante a preparação da biblioteca GBS (neste estudo de caso, a MseI). O algoritmo verificará a integridade deste sítio de corte.
-# --adapter-mm 2: Permite até 2 mismatches (erros de pareamento) ao procurar a sequência do adaptador, tornando a limpeza mais rigorosa diante de possíveis erros de sequenciamento.
-# -r (Rescue): Ativa o algoritmo de resgate. Ele tenta recuperar barcodes e sítios de enzima que falharam na identificação primária devido a erros mínimos do sequenciador.
-# -c (Clean): Habilita o filtro de limpeza básica, descartando sumariamente leituras que possuam bases não identificadas (marcadas como N pelo sequenciador).
-# -q (Quality): Habilita o filtro avançado de qualidade. Descartará leituras cujo Phred score caia abaixo do limite mínimo aceitável em uma janela deslizante matemática.
+cd ~/demultiplex
 ```
+
+Agora vamos rodar o `process_radtags`. Os dados brutos estão em uma pasta compartilhada, usada por toda a turma, então indicamos o caminho completo até eles:
+
+```bash
+process_radtags -f /home/genpop/dados_brutos/gbs_acrocomia.fastq.gz \
+                -b ~/demultiplex/barcodes.txt \
+                -o ~/demultiplex \
+                -e pstI \
+                --adapter-1 AGATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG \
+                --adapter-mm 2 \
+                -r -c -q
+```
+
+O que faz cada opção:
+
+| Opção | Função |
+|---|---|
+| `-f` | Arquivo FASTQ bruto (*single-end*), ainda sem demultiplexar |
+| `-b` | Arquivo com os barcodes e os nomes das amostras |
+| `-o` | Pasta de saída |
+| `-e` | Enzima de restrição usada na biblioteca: o programa confere se o sítio de corte aparece logo depois do barcode |
+| `--adapter-1` | Sequência do adaptador: reads que contêm o adaptador são descartados |
+| `--adapter-mm` | Número de diferenças (*mismatches*) permitidas ao procurar o adaptador |
+| `-r` | Recupera barcodes e sítios de restrição com erros de sequenciamento |
+| `-c` | Remove reads que contêm bases não identificadas (`N`) |
+| `-q` | Descarta reads de baixa qualidade |
+
+### Conferir os resultados
+
+```bash
+ls -lh ~/demultiplex
+```
+
+Deve aparecer um arquivo `.fq.gz` para cada uma das 10 amostras (por exemplo, `AM_04.fq.gz`), mais o relatório `process_radtags.log`. Vamos olhar o resumo:
+
+```bash
+head -n 20 ~/demultiplex/process_radtags.log
+```
+
+> [!NOTE]
+> Como usamos só 10 das 96 amostras do lane, a maior parte dos reads vai aparecer como *barcode não encontrado*. Isso é esperado: esses reads pertencem às outras 86 amostras.
 
 💡 **Single-end sequencing versus paired-end sequencing**
 > Em nosso exemplo, usamos uma biblioteca sequenciada single-end. Caso você tenha uma biblioteca paired-end, o comando a seguir ajuda a indicar onde se encontram as leituras R1 e R2. Os demais parâmetros são semelhantes.
