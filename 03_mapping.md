@@ -1,4 +1,4 @@
-# 💻 3. Alinhamento e mapeamento de sequências
+# 💻 3: Alinhamento e mapeamento de sequências
 
 Agora que temos nossos dados limpos e filtrados, o próximo passo é o **mapeamento**: comparar cada read de cada amostra com o genoma de referência para descobrir de qual região do cromossomo aquela sequência veio.
 
@@ -354,7 +354,7 @@ column -t ~/alinhamento/stats/resumo_cobertura.tsv
 ❓ Como foi o nosso mapeamento? Há amostras muito diferentes das outras?
 
 > [!NOTE]
-> **Para bibliotecas de genoma completo (WGS e lcWGS)**, a avaliação do mapeamento precisa ir além destas estatísticas. Também é importante olhar, por exemplo: a taxa de duplicação, a porcentagem de reads corretamente pareados e o tamanho do inserto (em dados *paired-end*), e a distribuição da profundidade ao longo do genoma inteiro, e não só a média. Ferramentas como `samtools stats`, [Qualimap](http://qualimap.conesalab.org/) e [mosdepth](https://github.com/brentp/mosdepth) ajudam nessa avaliação.
+> **Para bibliotecas de genoma completo (WGS e lcWGS)**, a avaliação do mapeamento precisa ir além destas estatísticas. Também é importante olhar, por exemplo: a taxa de duplicação, a porcentagem de reads corretamente pareados e o tamanho do inserto (em dados *paired-end*), e a distribuição da profundidade ao longo do genoma inteiro, e não só a média. Ferramentas como `samtools stats`, ajuda nessa avaliação.
 
 ---
 
