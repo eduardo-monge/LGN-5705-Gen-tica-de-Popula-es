@@ -68,9 +68,6 @@ fastqc -t 1 ~/trimmed/*_trimmed.fq.gz --outdir ~/qc/trimmed
 
 # MultiQC juntando os relatórios do FastQC e do fastp
 multiqc ~/qc/trimmed ~/qc/fastp -o ~/qc/trimmed
-
-# MultiQC comparando dados brutos e limpos no mesmo relatório
-multiqc ~/qc/brutos ~/qc/trimmed -o ~/qc/comparacao
 ```
 
 Copie para o seu computador os arquivos `~/qc/trimmed/multiqc_report.html` e `~/qc/comparacao/multiqc_report.html` (veja a seção [Copiando arquivos do servidor para o seu computador](#copiando-arquivos-do-servidor-para-o-seu-computador)).
