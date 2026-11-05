@@ -64,7 +64,7 @@ Agora precisamos confirmar se a limpeza funcionou. Vamos gerar novos relatórios
 mkdir -p ~/qc/trimmed
 
 # FastQC nos reads limpos
-fastqc -t 1 ~/trimmed/*_trimmed.fq.gz -o ~/qc/trimmed
+fastqc -t 1 ~/trimmed/*_trimmed.fq.gz --outdir ~/qc/trimmed
 
 # MultiQC juntando os relatórios do FastQC e do fastp
 multiqc ~/qc/trimmed ~/qc/fastp -o ~/qc/trimmed
