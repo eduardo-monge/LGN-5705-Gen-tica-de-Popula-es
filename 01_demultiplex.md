@@ -224,7 +224,7 @@ O [FastQC](https://github.com/s-andrews/FastQC) é uma ferramenta amplamente usa
 mkdir -p ~/qc/brutos
 
 # Rodar o FastQC em todos os arquivos demultiplexados
-fastqc -t 1 ~/demultiplex/*.fq.gz -o ~/qc/brutos
+fastqc -t 1 ~/demultiplex/*.fq.gz --outdir ~/qc/brutos
 ```
 
 > [!TIP]
