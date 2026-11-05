@@ -268,19 +268,19 @@ cd Downloads
 O formato do comando é `scp -P PORTA usuario@servidor:caminho/no/servidor destino/no/computador`. Para copiar o relatório do MultiQC:
 
 ```bash
-scp -P PORTA nome.sobrenome@ENDERECO_DO_SERVIDOR:~/qc/brutos/multiqc_report.html .
+scp -P 59022 USUARIO@dayhoff1.esalq.usp.br:~/qc/brutos/multiqc_report.html .
 ```
 
 Para copiar vários arquivos de uma vez, por exemplo todos os relatórios do FastQC, use o `*` **entre aspas**, para que ele seja interpretado no servidor e não no seu computador:
 
 ```bash
-scp -P PORTA "nome.sobrenome@ENDERECO_DO_SERVIDOR:~/qc/brutos/*.html" .
+scp -P 59022 "USUARIO@dayhoff1.esalq.usp.br:~/qc/brutos/multiqc_report.html" .
 ```
 
 E para copiar uma pasta inteira, com tudo o que tem dentro, use `-r`:
 
 ```bash
-scp -P PORTA -r nome.sobrenome@ENDERECO_DO_SERVIDOR:~/qc/brutos .
+scp -P 59022 -r USUARIO@dayhoff1.esalq.usp.br:~/qc/brutos .
 ```
 
 > [!TIP]
