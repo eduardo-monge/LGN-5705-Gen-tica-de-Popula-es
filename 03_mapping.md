@@ -262,8 +262,8 @@ Agora que entendemos cada etapa, vamos juntar tudo em um único loop, como farí
 
 1. Alinha com o `bwa mem` e ordena com o `samtools sort`, em um BAM temporário (sem passar pelo SAM).
 2. Calcula as estatísticas de mapeamento com o `flagstat`.
-3. Filtra e converte para CRAM.
-4. Indexa o CRAM.
+3. Filtra os reads e grava o BAM final.
+4. Indexa o BAM final.
 5. Apaga o BAM temporário.
 
 ```bash
@@ -282,29 +282,30 @@ for arquivo in ~/trimmed/*_trimmed.fq.gz; do
     # 2. Estatísticas de mapeamento (antes do filtro)
     samtools flagstat ~/alinhamento/${amostra}.tmp.bam > ~/alinhamento/stats/${amostra}_flagstat.txt
 
-    # 3. Filtrar e converter para CRAM
-    samtools view -F 4 -q 20 -C -T $REF \
-        -o ~/alinhamento/${amostra}.cram \
+    # 3. Filtrar e gravar o BAM final
+    samtools view -F 4 -q 20 -b \
+        -o ~/alinhamento/${amostra}.bam \
         ~/alinhamento/${amostra}.tmp.bam
 
-    # 4. Indexar o CRAM
-    samtools index ~/alinhamento/${amostra}.cram
+    # 4. Indexar o BAM final
+    samtools index ~/alinhamento/${amostra}.bam
 
     # 5. Apagar o BAM temporário
-    rm -rf ~/alinhamento/${amostra}.tmp.bam
+    rm ~/alinhamento/${amostra}.tmp.bam
 
     echo "Amostra $amostra finalizada."
 done
 ```
 
 > [!TIP]
-> Aqui o `bwa mem` não grava nenhum SAM: a saída vai direto, pelo *pipe* (`|`), para o `samtools sort`. Isso economiza espaço e tempo.
+> - Aqui o `bwa mem` não grava nenhum SAM: a saída vai direto, pelo *pipe* (`|`), para o `samtools sort`. Isso economiza espaço e tempo.
+> - No passo 3, o `-b` indica que a saída deve ser em formato BAM.
 
 ```bash
 ls -lh ~/alinhamento
 ```
 
-Você deve ter um `.cram` e um `.crai` (o índice) para cada uma das 10 amostras.
+Você deve ter um `.bam` e um `.bam.bai` (o índice) para cada uma das 10 amostras.
 
 ---
 
@@ -335,14 +336,14 @@ column -t ~/alinhamento/stats/resumo_mapeamento.tsv
 
 ### B. Cobertura e profundidade
 
-O `samtools coverage` resume, para cada amostra, quantas bases do cromossomo foram cobertas por pelo menos um read e qual é a profundidade média. Ele roda nos arquivos CRAM finais, ou seja, nos reads que vão de fato para a chamada de SNPs:
+O `samtools coverage` resume, para cada amostra, quantas bases do cromossomo foram cobertas por pelo menos um read e qual é a profundidade média. Ele roda nos BAMs finais, ou seja, nos reads que vão de fato para a chamada de SNPs:
 
 ```bash
 printf "Amostra\tCromossomo\tInicio\tFim\tN_reads\tBases_cobertas\tCobertura_pct\tProfundidade_media\tQual_base_media\tMAPQ_medio\n" > ~/alinhamento/stats/resumo_cobertura.tsv
 
-for cram in ~/alinhamento/*.cram; do
-    amostra=$(basename "$cram" .cram)
-    samtools coverage -H --reference $REF "$cram" | \
+for bam in ~/alinhamento/*.bam; do
+    amostra=$(basename "$bam" .bam)
+    samtools coverage -H "$bam" | \
         awk -v a="$amostra" '{print a "\t" $0}' >> ~/alinhamento/stats/resumo_cobertura.tsv
 done
 
@@ -354,13 +355,19 @@ column -t ~/alinhamento/stats/resumo_cobertura.tsv
 ❓ Como foi o nosso mapeamento? Há amostras muito diferentes das outras?
 
 > [!NOTE]
-> **Para bibliotecas de genoma completo (WGS e lcWGS)**, a avaliação do mapeamento precisa ir além destas estatísticas. Também é importante olhar, por exemplo: a taxa de duplicação, a porcentagem de reads corretamente pareados e o tamanho do inserto (em dados *paired-end*), e a distribuição da profundidade ao longo do genoma inteiro, e não só a média. Ferramentas como `samtools stats`, ajuda nessa avaliação.
+> **Para bibliotecas de genoma completo (WGS e lcWGS)**, a avaliação do mapeamento precisa ir além destas estatísticas. Também é importante olhar, por exemplo: a taxa de duplicação, a porcentagem de reads corretamente pareados e o tamanho do inserto (em dados *paired-end*), e a distribuição da profundidade ao longo do genoma inteiro, e não só a média. Ferramentas como o `samtools stats` ajudam nessa avaliação.
 
 ---
 
 ## 5. Duplicatas de PCR: quando remover?
+<p align="center">
+  <img width="977" height="341" alt="duplication" src="https://github.com/user-attachments/assets/5f1c0c8c-c181-436a-b176-2fc0662683a6" />
+  <br>
+  <sub><b>Figura 1.</b> Steps in GBS library construction. Fonte: Elshire et. al 2011. DOI:10.1371/journal.pone.0019379 .</sub>
+</p>
 
-<!-- Inserir imagem aqui -->
+
+
 
 Durante a preparação das bibliotecas, a amplificação por PCR pode gerar cópias de um mesmo fragmento de DNA. Se essas duplicatas não forem removidas, os programas de chamada de variantes as interpretam como evidências independentes, inflando a profundidade de um alelo e distorcendo os genótipos e as frequências alélicas.
 
