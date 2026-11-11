@@ -18,4 +18,4 @@ Clique nos links abaixo para acessar o passo a passo de cada dia:
 * [2. Trimming](02_trimming.md)
 * [3. Mapamiento](03_mapping.md)
 * [4. Variant Calling](04_variantcalling.md)
-* [5. Filtragem VCF final](04_vcf.md)
+* [5. Filtragem VCF final](05_vcf.md)
