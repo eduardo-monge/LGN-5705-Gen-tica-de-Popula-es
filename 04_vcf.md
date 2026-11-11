@@ -1,4 +1,4 @@
-# 💻4: Filtros do arquivo VCF
+# 💻5: Filtros do arquivo VCF
 
 A última etapa antes das análises populacionais é filtrar o VCF. O VCF que geramos é **bruto**: contém todos os candidatos a SNP, inclusive erros de sequenciamento, erros de mapeamento e posições com pouca informação. O objetivo da filtragem é manter só os SNPs confiáveis e informativos.
 
