@@ -6,7 +6,7 @@ Nesta prática, vamos aprender a analisar as sequências para verificar a qualid
 ## 1. Demultiplexação com STACKS (`process_radtags`)
 Quando sequenciamos bibliotecas de representação reduzida (como RADseq ou GBS), várias amostras são misturadas no mesmo tubo (multiplexadas). O primeiro passo é usar os "códigos de barras" (*barcodes*) para separar quem é quem. Geralmente, as empresas já fornecem os dados separados, mas também podemos fazê-lo nós mesmos. 
 <p align="center">
-<img width="2498" height="1679" alt="gr1_lrg" src="https://github.com/user-attachments/assets/4c7c1cf9-2000-47ca-8b08-2457b9c36b30" />
+<img width="2067" height="841" alt="pone 0019379 g002" src="https://github.com/user-attachments/assets/48729b2d-54ff-418a-a842-a069a006b8c2" />
   <br>
   <sub><b>Figura 1.</b> Steps in GBS library construction. Fonte: Elshire et. al 2011. DOI:10.1371/journal.pone.0019379 .</sub>
 </p>
