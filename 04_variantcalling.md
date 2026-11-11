@@ -1,4 +1,4 @@
-# 💻 Prática: Chamada de SNPs
+# 💻 4: Chamada de SNPs
 
 Nesta prática, vamos aprender a chamar variantes, com foco em SNPs, em dois cenários diferentes: **com** e **sem** genoma de referência. Para que tudo caiba no tempo da aula, vamos trabalhar só com o **cromossomo 5**.
 
