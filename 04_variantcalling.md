@@ -19,7 +19,7 @@ Essas variantes podem envolver uma única base ou cromossomos inteiros. Os tipos
     + *Translocações*: troca de segmentos entre cromossomos diferentes
 
 <p align="center">
-  <img width="739" height="53" alt="image" src="https://github.com/user-attachments/assets/8e5ac4f9-d023-4fe0-b3d0-5e1468b0856c"/>
+<img width="2498" height="1679" alt="gr1_lrg" src="https://github.com/user-attachments/assets/4c7c1cf9-2000-47ca-8b08-2457b9c36b30" />
   <br>
   <sub><b>Figura 1.</b> Tipos de variação genética. Nesta et al, 2021. (https://doi.org/10.1016/j.tig.2020.10.003)
 </p>
