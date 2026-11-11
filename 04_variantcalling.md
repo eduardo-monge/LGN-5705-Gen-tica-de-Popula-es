@@ -19,13 +19,10 @@ Essas variantes podem envolver uma única base ou cromossomos inteiros. Os tipos
     + *Translocações*: troca de segmentos entre cromossomos diferentes
 
 <p align="center">
-  <img width="700" alt="GBS" src="https://github.com/user-attachments/assets/223b6278-a882-4057-babf-beaa5cd42855" />
+  <img width="739" height="53" alt="image" src="https://github.com/user-attachments/assets/8e5ac4f9-d023-4fe0-b3d0-5e1468b0856c" />
   <br>
   <sub><b>Figura 1.</b> Tipos de variação genética. Nesta et al, 2021. (https://doi.org/10.1016/j.tig.2020.10.003)
-<img width="739" height="53" alt="image" src="https://github.com/user-attachments/assets/8e5ac4f9-d023-4fe0-b3d0-5e1468b0856c" />
 </p>
-
-![Tipos de variação genética](https://github.com/user-attachments/assets/a8a404bb-07a4-432e-bd0d-2a869c573161)
 
 Nesta prática, vamos nos concentrar nos SNPs.
 
