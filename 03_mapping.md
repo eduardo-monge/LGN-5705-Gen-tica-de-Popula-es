@@ -291,7 +291,7 @@ for arquivo in ~/trimmed/*_trimmed.fq.gz; do
     samtools index ~/alinhamento/${amostra}.bam
 
     # 5. Apagar o BAM temporário
-    rm -rf ~/alinhamento/${amostra}.tmp.bam
+    rm -f ~/alinhamento/${amostra}.tmp.bam
 
     echo "Amostra $amostra finalizada."
 done
