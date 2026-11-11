@@ -363,7 +363,7 @@ column -t ~/alinhamento/stats/resumo_cobertura.tsv
 <p align="center">
   <img width="977" height="341" alt="duplication" src="https://github.com/user-attachments/assets/5f1c0c8c-c181-436a-b176-2fc0662683a6" />
   <br>
-  <sub><b>Figura 1.</b> Steps in GBS library construction. Fonte: Elshire et. al 2011. DOI:10.1371/journal.pone.0019379 .</sub>
+  <sub><b>Figura 1.</b> Função Mark Duplicated. Fonte: https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard .</sub>
 </p>
 
 
