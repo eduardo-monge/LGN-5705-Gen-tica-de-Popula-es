@@ -1,4 +1,4 @@
-<img width="739" height="53" alt="image" src="https://github.com/user-attachments/assets/17c5a43b-97d3-4313-ae26-394a75ec03cc" /># 💻 4: Chamada de SNPs
+# 💻 4: Chamada de SNPs
 
 Nesta prática, vamos aprender a chamar variantes, com foco em SNPs, em dois cenários diferentes: **com** e **sem** genoma de referência. Para que tudo caiba no tempo da aula, vamos trabalhar só com o **cromossomo 5**.
 
@@ -19,7 +19,7 @@ Essas variantes podem envolver uma única base ou cromossomos inteiros. Os tipos
     + *Translocações*: troca de segmentos entre cromossomos diferentes
 
 <p align="center">
-  <img width="739" height="53" alt="image" src="https://github.com/user-attachments/assets/8e5ac4f9-d023-4fe0-b3d0-5e1468b0856c" />
+  <img width="739" height="53" alt="image" src="https://github.com/user-attachments/assets/8e5ac4f9-d023-4fe0-b3d0-5e1468b0856c"/>
   <br>
   <sub><b>Figura 1.</b> Tipos de variação genética. Nesta et al, 2021. (https://doi.org/10.1016/j.tig.2020.10.003)
 </p>
